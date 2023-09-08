@@ -77,4 +77,22 @@ type <- ifelse(model_category == "binary_classification", "response", "probs")
 model <- readRDS(PREDICTOR_FILE_PATH)
 predictions <- predict(model, newdata = df, type = type)
 
-# Getting the original labelss
+# Getting the original labels
+encoder <- readRDS(LABEL_ENCODER_FILE)
+target <- readRDS(ENCODED_TARGET_FILE)
+class_names <- encoder[target + 1]
+unique_classes <- unique(class_names)
+unique_classes <- sort(unique_classes)
+
+if (model_category == 'binary_classification'){
+    Prediction1 <- predictions
+    Prediction2 <- 1 - Prediction1
+    predictions_df <- data.frame(Prediction1 = Prediction1, Prediction2 = Prediction2)
+} else{
+    predictions_df <- predictions
+}
+colnames(predictions_df) <- unique_classes
+predictions_df <- tibble(ids = ids) %>% bind_cols(predictions_df)
+colnames(predictions_df)[1] <- id_feature
+
+write.csv(predictions_df, PREDICTIONS_FILE, row.names = FALSE)
