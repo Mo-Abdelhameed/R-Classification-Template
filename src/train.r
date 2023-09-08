@@ -46,7 +46,15 @@ model_category <- schema$modelCategory
 
 # Reading training data
 file_name <- list.files(TRAIN_DIR, pattern = "*.csv")[1]
-df <- read.csv(file.path(TRAIN_DIR, file_name), na.strings = c("", "NA", "?"), check.names=FALSE)
+# df <- read.csv(file.path(TRAIN_DIR, file_name), na.strings = c("", "NA", "?"), check.names=FALSE)
+
+# Read the first line to get column names
+header_line <- readLines(file.path(TRAIN_DIR, file_name), n = 1)
+col_names <- unlist(strsplit(header_line, split = ",")) # assuming ',' is the delimiter
+# Read the CSV with the exact column names
+df <- read.csv(file.path(TRAIN_DIR, file_name), skip = 1, col.names = col_names, check.names=FALSE)
+
+
 
 # Impute missing data
 imputation_values <- list()
@@ -70,12 +78,14 @@ ids <- df[, id_feature]
 target <- df[, target_feature]
 df <- df %>% select(-all_of(c(id_feature, target_feature)))
 
+
 # One Hot Encoding
 if(length(categorical_features) > 0){
     top_3_map <- list()
     for(col in categorical_features) {
         # Get the top 3 categories for the column
         top_3_categories <- names(sort(table(df[[col]]), decreasing = TRUE)[1:3])
+
         # Save the top 3 categories for this column
         top_3_map[[col]] <- top_3_categories
         # Replace categories outside the top 3 with "Other"

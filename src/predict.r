@@ -45,7 +45,14 @@ model_category <- schema$modelCategory
 
 # Reading test data.
 file_name <- list.files(TEST_DIR, pattern = "*.csv", full.names = TRUE)[1]
-df <- read.csv(file_name, na.strings = c("", "NA", "?df"), check.names=FALSE)
+# df <- read.csv(file_name, na.strings = c("", "NA", "?df"), check.names=FALSE)
+
+# Read the first line to get column names
+header_line <- readLines(file_name, n = 1)
+col_names <- unlist(strsplit(header_line, split = ",")) # assuming ',' is the delimiter
+# Read the CSV with the exact column names
+df <- read.csv(file_name, skip = 1, col.names = col_names, check.names=FALSE)
+
 
 # Data preprocessing
 imputation_values <- readRDS(IMPUTATION_FILE)
@@ -93,6 +100,7 @@ target <- readRDS(ENCODED_TARGET_FILE)
 class_names <- encoder[target + 1]
 unique_classes <- unique(class_names)
 unique_classes <- sort(unique_classes)
+
 
 if (model_category == 'binary_classification'){
     Prediction1 <- predictions
