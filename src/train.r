@@ -45,7 +45,7 @@ model_category <- schema$modelCategory
 
 # Reading training data
 file_name <- list.files(TRAIN_DIR, pattern = "*.csv")[1]
-df <- read.csv(file.path(TRAIN_DIR, file_name), na.strings = c("", "NA", "?"))
+df <- read.csv(file.path(TRAIN_DIR, file_name), na.strings = c("", "NA", "?"), check.names=FALSE)
 
 # Impute missing data
 imputation_values <- list()
