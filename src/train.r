@@ -32,7 +32,12 @@ if (!dir.exists(file.path(MODEL_ARTIFACTS_PATH, "predictor"))) {
     dir.create(file.path(MODEL_ARTIFACTS_PATH, "predictor"))
 }
 
+
 # Reading the schema
+# The schema contains metadata about the datasets. 
+# We will use the scehma to get information about the type of each feature (NUMERIC or CATEGORICAL)
+# and the id and target features, this will be helpful in preprocessing stage.
+
 file_name <- list.files(INPUT_SCHEMA_DIR, pattern = "*.json")[1]
 schema <- fromJSON(file.path(INPUT_SCHEMA_DIR, file_name))
 features <- schema$features
@@ -52,6 +57,25 @@ col_names <- unlist(strsplit(header_line, split = ",")) # assuming ',' is the de
 # Read the CSV with the exact column names
 df <- read.csv(file.path(TRAIN_DIR, file_name), skip = 1, col.names = col_names, check.names=FALSE)
 
+# Data Preprocessing
+# Data preprocessing is very important before training the model, as the data may contain missing values in some cells. 
+# Moreover, most of the learning algorithms cannot work with categorical data, thus the data has to be encoded.
+# In this section we will impute the missing values and encode the categorical features. Afterwards the data will be ready to train the model.
+
+# You can add your own preprocessing steps such as:
+
+# Normalization
+# Outlier removal
+# Handling imbalanced classes
+# <li>Dropping or adding features
+
+# Important note:
+# Saving the values used for imputation during training step is crucial. 
+# These values will be used to impute missing data in the testing set. 
+# This is very important to avoid the well known problem of data leakage. 
+# During testing, you should not make any assumptions about the data in hand, 
+# alternatively anything needed during the testing phase should be learned from the training phase.
+# This is why we are creating a dictionary of values used during training to reuse these values during testing.
 
 
 # Impute missing data
@@ -72,6 +96,10 @@ saveRDS(imputation_values, IMPUTATION_FILE)
 
 
 # Encoding Categorical features
+
+# The id column is just an identifier for the training example, so we will exclude it during the encoding phase.
+# Target feature will be label encoded in the next step.
+
 ids <- df[, id_feature]
 target <- df[, target_feature]
 df <- df %>% select(-all_of(c(id_feature, target_feature)))
@@ -106,6 +134,7 @@ saveRDS(encoded_target, ENCODED_TARGET_FILE)
 
 
 # Train the Classifier
+# We choose Logistic Regression Classifier, but feel free to try your own and compare the results.
 if (model_category == 'binary_classification'){
     model <- glm(encoded_target ~ ., family = binomial(link = "logit"), data = df)
 

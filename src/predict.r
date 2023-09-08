@@ -51,6 +51,7 @@ df <- read.csv(file_name, skip = 1, col.names = col_names, check.names=FALSE)
 
 
 # Data preprocessing
+# Note that when we work with testing data, we have to impute using the same values learned during training. This is to avoid data leakage.
 imputation_values <- readRDS(IMPUTATION_FILE)
 for (column in names(df)[sapply(df, function(col) any(is.na(col)))]) {
   df[, column][is.na(df[, column])] <- imputation_values[[column]]
@@ -61,6 +62,7 @@ ids <- df[[id_feature]]
 df[[id_feature]] <- NULL
 
 # Encoding
+# We encode the data using the same encoder that we saved during training.
 if (length(categorical_features) > 0 && file.exists(OHE_ENCODER_FILE)) {
   top_3_map <- readRDS(TOP_3_CATEGORIES_MAP)
   encoder <- readRDS(OHE_ENCODER_FILE)
