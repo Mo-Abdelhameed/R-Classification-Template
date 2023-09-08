@@ -2,6 +2,7 @@
 library(tidyverse)
 library(jsonlite)
 library(fastDummies)
+library(nnet)
 
 # Paths
 ROOT_DIR <- dirname(getwd())
