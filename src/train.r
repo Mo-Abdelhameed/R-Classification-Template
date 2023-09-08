@@ -10,7 +10,7 @@ library(nnet)
 
 # Define directories and paths
 
-ROOT_DIR <- getwd()
+ROOT_DIR <- dirname(getwd())
 MODEL_INPUTS_OUTPUTS <- file.path(ROOT_DIR, 'model_inputs_outputs')
 INPUT_DIR <- file.path(MODEL_INPUTS_OUTPUTS, "inputs")
 INPUT_SCHEMA_DIR <- file.path(INPUT_DIR, "schema")
