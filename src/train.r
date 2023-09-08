@@ -77,6 +77,7 @@ if(length(categorical_features) > 0){
     df <- df_encoded
 }
 
+
 # Label encoding target feature
 levels_target <- levels(factor(target))
 encoded_target <- as.integer(factor(target, levels = levels_target)) - 1
@@ -84,11 +85,10 @@ saveRDS(levels_target, LABEL_ENCODER_FILE)
 saveRDS(encoded_target, ENCODED_TARGET_FILE)
 
 # Train the Classifier
-
 if (model_category == 'binary_classification'){
-    model <- glm(target ~ ., family = binomial(link = "logit"), data = df)
+    model <- glm(encoded_target ~ ., family = binomial(link = "logit"), data = df)
 
 } else if (model_category == "multiclass_classification") {
-   model <- multinom(target ~ ., data = df)
+   model <- multinom(encoded_target ~ ., data = df)
 }
 saveRDS(model, PREDICTOR_FILE_PATH)
