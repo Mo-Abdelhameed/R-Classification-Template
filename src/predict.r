@@ -21,7 +21,7 @@ IMPUTATION_FILE <- file.path(MODEL_ARTIFACTS_PATH, 'imputation.rds')
 PREDICTIONS_DIR <- file.path(OUTPUT_DIR, 'predictions')
 PREDICTIONS_FILE <- file.path(PREDICTIONS_DIR, 'predictions.csv')
 LABEL_ENCODER_FILE <- file.path(MODEL_ARTIFACTS_PATH, 'label_encoder.rds')
-ENCODED_TARGET_FILE <- file.path(MODEL_ARTIFACTS_PATH, "encoded_target.RDS")
+ENCODED_TARGET_FILE <- file.path(MODEL_ARTIFACTS_PATH, "encoded_target.rds")
 
 
 if (!dir.exists(PREDICTIONS_DIR)) {

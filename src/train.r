@@ -17,11 +17,11 @@ INPUT_SCHEMA_DIR <- file.path(INPUT_DIR, "schema")
 DATA_DIR <- file.path(INPUT_DIR, "data")
 TRAIN_DIR <- file.path(DATA_DIR, "training")
 MODEL_ARTIFACTS_PATH <- file.path(MODEL_INPUTS_OUTPUTS, "model", "artifacts")
-OHE_ENCODER_FILE <- file.path(MODEL_ARTIFACTS_PATH, 'ohe.RDS')
-PREDICTOR_FILE_PATH <- file.path(MODEL_ARTIFACTS_PATH, "predictor", "predictor.RDS")
-IMPUTATION_FILE <- file.path(MODEL_ARTIFACTS_PATH, 'imputation.RDS')
-LABEL_ENCODER_FILE <- file.path(MODEL_ARTIFACTS_PATH, 'label_encoder.RDS')
-ENCODED_TARGET_FILE <- file.path(MODEL_ARTIFACTS_PATH, "encoded_target.RDS")
+OHE_ENCODER_FILE <- file.path(MODEL_ARTIFACTS_PATH, 'ohe.rds')
+PREDICTOR_FILE_PATH <- file.path(MODEL_ARTIFACTS_PATH, "predictor", "predictor.rds")
+IMPUTATION_FILE <- file.path(MODEL_ARTIFACTS_PATH, 'imputation.rds')
+LABEL_ENCODER_FILE <- file.path(MODEL_ARTIFACTS_PATH, 'label_encoder.rds')
+ENCODED_TARGET_FILE <- file.path(MODEL_ARTIFACTS_PATH, "encoded_target.rds")
 
 
 if (!dir.exists(MODEL_ARTIFACTS_PATH)) {
