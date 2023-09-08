@@ -87,7 +87,8 @@ unique_classes <- sort(unique_classes)
 if (model_category == 'binary_classification'){
     Prediction1 <- predictions
     Prediction2 <- 1 - Prediction1
-    predictions_df <- data.frame(Prediction1 = Prediction1, Prediction2 = Prediction2)
+    predictions_df <- data.frame(Prediction2 = Prediction2, Prediction1 = Prediction1)
+    
 } else{
     predictions_df <- predictions
 }
