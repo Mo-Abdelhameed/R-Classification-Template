@@ -46,8 +46,6 @@ model_category <- schema$modelCategory
 
 # Reading training data
 file_name <- list.files(TRAIN_DIR, pattern = "*.csv")[1]
-# df <- read.csv(file.path(TRAIN_DIR, file_name), na.strings = c("", "NA", "?"), check.names=FALSE)
-
 # Read the first line to get column names
 header_line <- readLines(file.path(TRAIN_DIR, file_name), n = 1)
 col_names <- unlist(strsplit(header_line, split = ",")) # assuming ',' is the delimiter

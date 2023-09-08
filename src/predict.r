@@ -25,8 +25,6 @@ LABEL_ENCODER_FILE <- file.path(MODEL_ARTIFACTS_PATH, 'label_encoder.rds')
 ENCODED_TARGET_FILE <- file.path(MODEL_ARTIFACTS_PATH, "encoded_target.rds")
 TOP_3_CATEGORIES_MAP <- file.path(MODEL_ARTIFACTS_PATH, "top_3_map.rds")
 
-
-
 if (!dir.exists(PREDICTIONS_DIR)) {
   dir.create(PREDICTIONS_DIR, recursive = TRUE)
 }
@@ -45,8 +43,6 @@ model_category <- schema$modelCategory
 
 # Reading test data.
 file_name <- list.files(TEST_DIR, pattern = "*.csv", full.names = TRUE)[1]
-# df <- read.csv(file_name, na.strings = c("", "NA", "?df"), check.names=FALSE)
-
 # Read the first line to get column names
 header_line <- readLines(file_name, n = 1)
 col_names <- unlist(strsplit(header_line, split = ",")) # assuming ',' is the delimiter
