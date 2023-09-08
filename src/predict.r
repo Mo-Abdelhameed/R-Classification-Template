@@ -23,6 +23,8 @@ PREDICTIONS_DIR <- file.path(OUTPUT_DIR, 'predictions')
 PREDICTIONS_FILE <- file.path(PREDICTIONS_DIR, 'predictions.csv')
 LABEL_ENCODER_FILE <- file.path(MODEL_ARTIFACTS_PATH, 'label_encoder.rds')
 ENCODED_TARGET_FILE <- file.path(MODEL_ARTIFACTS_PATH, "encoded_target.rds")
+TOP_3_CATEGORIES_MAP <- file.path(MODEL_ARTIFACTS_PATH, "top_3_map.rds")
+
 
 
 if (!dir.exists(PREDICTIONS_DIR)) {
@@ -57,7 +59,13 @@ df[[id_feature]] <- NULL
 
 # Encoding
 if (length(categorical_features) > 0 && file.exists(OHE_ENCODER_FILE)) {
+  top_3_map <- readRDS(TOP_3_CATEGORIES_MAP)
   encoder <- readRDS(OHE_ENCODER_FILE)
+  for(col in categorical_features) {
+    # Use the saved top 3 categories to replace values outside these categories with 'Other'
+    df[[col]][!(df[[col]] %in% top_3_map[[col]])] <- "Other"
+  }
+
   test_df_encoded <- dummy_cols(df, select_columns = categorical_features, remove_selected_columns = TRUE)
   encoded_columns <- readRDS(OHE_ENCODER_FILE)
   # Add missing columns with 0s
@@ -71,6 +79,7 @@ if (length(categorical_features) > 0 && file.exists(OHE_ENCODER_FILE)) {
     extra_cols <- setdiff(colnames(test_df_encoded), c(colnames(df), encoded_columns))
     df <- test_df_encoded[, !names(test_df_encoded) %in% extra_cols]
 }
+
 
 type <- ifelse(model_category == "binary_classification", "response", "probs")
 

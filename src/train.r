@@ -22,6 +22,7 @@ PREDICTOR_FILE_PATH <- file.path(MODEL_ARTIFACTS_PATH, "predictor", "predictor.r
 IMPUTATION_FILE <- file.path(MODEL_ARTIFACTS_PATH, 'imputation.rds')
 LABEL_ENCODER_FILE <- file.path(MODEL_ARTIFACTS_PATH, 'label_encoder.rds')
 ENCODED_TARGET_FILE <- file.path(MODEL_ARTIFACTS_PATH, "encoded_target.rds")
+TOP_3_CATEGORIES_MAP <- file.path(MODEL_ARTIFACTS_PATH, "top_3_map.rds")
 
 
 if (!dir.exists(MODEL_ARTIFACTS_PATH)) {
@@ -71,9 +72,20 @@ df <- df %>% select(-all_of(c(id_feature, target_feature)))
 
 # One Hot Encoding
 if(length(categorical_features) > 0){
+    top_3_map <- list()
+    for(col in categorical_features) {
+        # Get the top 3 categories for the column
+        top_3_categories <- names(sort(table(df[[col]]), decreasing = TRUE)[1:3])
+        # Save the top 3 categories for this column
+        top_3_map[[col]] <- top_3_categories
+        # Replace categories outside the top 3 with "Other"
+        df[[col]][!(df[[col]] %in% top_3_categories)] <- "Other"
+    }
+
     df_encoded <- dummy_cols(df, select_columns = categorical_features, remove_selected_columns = TRUE)
     encoded_columns <- setdiff(colnames(df_encoded), colnames(df))
     saveRDS(encoded_columns, OHE_ENCODER_FILE)
+    saveRDS(top_3_map, TOP_3_CATEGORIES_MAP)
     df <- df_encoded
 }
 
@@ -84,11 +96,12 @@ encoded_target <- as.integer(factor(target, levels = levels_target)) - 1
 saveRDS(levels_target, LABEL_ENCODER_FILE)
 saveRDS(encoded_target, ENCODED_TARGET_FILE)
 
+
 # Train the Classifier
 if (model_category == 'binary_classification'){
     model <- glm(encoded_target ~ ., family = binomial(link = "logit"), data = df)
 
 } else if (model_category == "multiclass_classification") {
-   model <- multinom(encoded_target ~ ., data = df)
+   model <- multinom(encoded_target ~ ., data = df, MaxNWts = 10000)
 }
 saveRDS(model, PREDICTOR_FILE_PATH)
