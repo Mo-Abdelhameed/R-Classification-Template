@@ -67,7 +67,7 @@ df <- read.csv(file.path(TRAIN_DIR, file_name), skip = 1, col.names = col_names,
 # Normalization
 # Outlier removal
 # Handling imbalanced classes
-# <li>Dropping or adding features
+# Dropping or adding features
 
 # Important note:
 # Saving the values used for imputation during training step is crucial. 
